@@ -1,0 +1,44 @@
+{
+    "name": "prezent/doctrine-translatable-bundle",
+    "type": "symfony-bundle",
+    "description": "Integrate the doctrine-translatable extension in Symfony2",
+    "keywords": [
+        "doctrine2",
+        "extensions",
+        "translatable",
+        "i18n",
+        "symfony2",
+        "bundle"
+    ],
+    "homepage": "http://www.prezent.nl",
+    "authors": [{
+        "name": "Prezent Internet B.V.",
+        "email": "github@prezent.nl"
+    }],
+    "license": "MIT",
+    "support": {
+        "wiki": "https://github.com/prezent/doctrine-translatable-bundle/tree/master/Resources/doc",
+        "issues": "https://github.com/prezent/doctrine-translatable-bundle/issues",
+        "source": "https://github.com/prezent/doctrine-translatable-bundle"
+    },
+    "require": {
+        "doctrine/doctrine-bundle": "^1.2|^2.0",
+        "prezent/doctrine-translatable": "^1.0|^2.0",
+        "symfony/config": "^2.7|^3.0|^4.0|^5.0",
+        "symfony/dependency-injection": "^2.7|^3.0|^4.0|^5.0",
+        "symfony/event-dispatcher": "^2.7|^3.0|^4.0|^5.0",
+        "symfony/http-foundation": "^2.7|^3.0|^4.0|^5.0",
+        "symfony/http-kernel": "^2.7|^3.0|^4.0|^5.0"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.1"
+    },
+    "autoload": {
+        "psr-4": { "Prezent\\Doctrine\\TranslatableBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
