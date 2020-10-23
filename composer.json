@@ -1,5 +1,5 @@
 {
-    "name": "prezent/doctrine-translatable-bundle",
+    "name": "hgabka/doctrine-translatable-bundle",
     "type": "symfony-bundle",
     "description": "Integrate the doctrine-translatable extension in Symfony2",
     "keywords": [
@@ -10,20 +10,13 @@
         "symfony2",
         "bundle"
     ],
-    "homepage": "http://www.prezent.nl",
+    "homepage": "http://hgabka.eu",
     "authors": [{
-        "name": "Prezent Internet B.V.",
-        "email": "github@prezent.nl"
+        "name": "Gabe"
     }],
-    "license": "MIT",
-    "support": {
-        "wiki": "https://github.com/prezent/doctrine-translatable-bundle/tree/master/Resources/doc",
-        "issues": "https://github.com/prezent/doctrine-translatable-bundle/issues",
-        "source": "https://github.com/prezent/doctrine-translatable-bundle"
-    },
     "require": {
         "doctrine/doctrine-bundle": "^1.2|^2.0",
-        "prezent/doctrine-translatable": "^1.0|^2.0",
+        "hgabka/doctrine-translatable": "^1.0|^2.0",
         "symfony/config": "^2.7|^3.0|^4.0|^5.0",
         "symfony/dependency-injection": "^2.7|^3.0|^4.0|^5.0",
         "symfony/event-dispatcher": "^2.7|^3.0|^4.0|^5.0",
@@ -34,7 +27,7 @@
         "symfony/phpunit-bridge": "^4.1"
     },
     "autoload": {
-        "psr-4": { "Prezent\\Doctrine\\TranslatableBundle\\": "" }
+        "psr-4": { "Hgabka\\Doctrine\\TranslatableBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
