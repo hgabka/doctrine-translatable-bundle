@@ -1,6 +1,6 @@
 <?php
 
-namespace Prezent\Doctrine\TranslatableBundle\DependencyInjection\Compiler;
+namespace Hgabka\Doctrine\TranslatableBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -19,7 +19,7 @@ class DriverChainCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $driver = $container->getDefinition('prezent_doctrine_translatable.driver_chain');
+        $driver = $container->getDefinition('hgabka_doctrine_translatable.driver_chain');
 
         foreach ($container->getParameter('doctrine.entity_managers') as $name => $manager) {
             $adapter = new Definition(
@@ -29,7 +29,7 @@ class DriverChainCompilerPass implements CompilerPassInterface
                 )
             );
 
-            $class = 'Prezent\\Doctrine\\Translatable\\Mapping\\Driver\\DoctrineAdapter';
+            $class = 'Hgabka\\Doctrine\\Translatable\\Mapping\\Driver\\DoctrineAdapter';
             $method = 'fromMetadataDriver';
 
             if (method_exists($adapter, 'setFactory')) {
