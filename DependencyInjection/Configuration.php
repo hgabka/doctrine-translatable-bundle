@@ -1,13 +1,6 @@
 <?php
 
-/*
- * (c) Prezent Internet B.V. <info@prezent.nl>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace Prezent\Doctrine\TranslatableBundle\DependencyInjection;
+namespace Hgabka\Doctrine\TranslatableBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -24,12 +17,12 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder('prezent_doctrine_translatable');
+        $treeBuilder = new TreeBuilder('hgabka_doctrine_translatable');
 
         if (method_exists($treeBuilder, 'getRootNode')) {
             $rootNode = $treeBuilder->getRootNode();
         } else {
-            $rootNode = $treeBuilder->root('prezent_doctrine_translatable');
+            $rootNode = $treeBuilder->root('hgabka_doctrine_translatable');
         }
 
         $rootNode
