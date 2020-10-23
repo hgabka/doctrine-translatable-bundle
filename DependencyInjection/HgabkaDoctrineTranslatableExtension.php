@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Prezent\Doctrine\TranslatableBundle\DependencyInjection;
+namespace Hgabka\Doctrine\TranslatableBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class PrezentDoctrineTranslatableExtension extends Extension
+class HgabkaDoctrineTranslatableExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class PrezentDoctrineTranslatableExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->getDefinition('prezent_doctrine_translatable.listener')
+        $container->getDefinition('hgabka_doctrine_translatable.listener')
                   ->addMethodCall('setCurrentLocale', array($config['fallback_locale']))
                   ->addMethodCall('setFallbackLocale', array($config['fallback_locale']));
 
