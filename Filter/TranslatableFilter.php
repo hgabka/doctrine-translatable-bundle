@@ -1,16 +1,9 @@
 <?php
 
-/*
- * (c) Prezent Internet B.V. <info@prezent.nl>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace Prezent\Doctrine\TranslatableBundle\Filter;
+namespace Hgabka\Doctrine\TranslatableBundle\Filter;
 
 use Doctrine\ORM\Query\Expr;
-use Prezent\Doctrine\Translatable\EventListener\TranslatableListener;
+use Hgabka\Doctrine\Translatable\EventListener\TranslatableListener;
 use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\DoctrineORMAdminBundle\Filter\StringFilter;
