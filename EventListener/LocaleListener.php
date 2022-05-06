@@ -33,6 +33,7 @@ class LocaleListener implements EventSubscriberInterface
      * Set request locale
      *
      * @param RequestEvent $event
+     *
      * @return void
      */
     public function onKernelRequest(KernelEvent $event)
@@ -43,10 +44,10 @@ class LocaleListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    static public function getSubscribedEvents(): array
+    public static function getSubscribedEvents(): array
     {
-        return array(
-            KernelEvents::REQUEST => array(array('onKernelRequest', 10)),
-        );
+        return [
+            KernelEvents::REQUEST => [['onKernelRequest', 10]],
+        ];
     }
 }

@@ -4,10 +4,9 @@ namespace Hgabka\Doctrine\TranslatableBundle\Filter;
 
 use Doctrine\ORM\Query\Expr;
 use Hgabka\Doctrine\Translatable\EventListener\TranslatableListener;
-use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
 use Sonata\DoctrineORMAdminBundle\Filter\StringFilter;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * TranslatableFilter
@@ -42,11 +41,11 @@ class TranslatableFilter extends StringFilter
 
         $data['value'] = trim($data['value']);
 
-        if (strlen($data['value']) == 0) {
+        if (0 === strlen($data['value'])) {
             return;
         }
 
-        $data['type'] = !isset($data['type']) ?  ChoiceType::TYPE_CONTAINS : $data['type'];
+        $data['type'] = !isset($data['type']) ? ChoiceType::TYPE_CONTAINS : $data['type'];
         $operator = $this->getOperator((int) $data['type']);
 
         if (!$operator) {
@@ -78,13 +77,13 @@ class TranslatableFilter extends StringFilter
 
         $or->add(sprintf('%s.%s %s :%s', 'trans', $field, $operator, $parameterName));
 
-        if (ChoiceType::TYPE_NOT_CONTAINS == $data['type']) {
+        if (ChoiceType::TYPE_NOT_CONTAINS === $data['type']) {
             $or->add($queryBuilder->expr()->isNull(sprintf('%s.%s', 'trans', $field)));
         }
 
         $this->applyWhere($queryBuilder, $or);
 
-        if ($data['type'] == ChoiceType::TYPE_EQUAL) {
+        if (ChoiceType::TYPE_EQUAL === $data['type']) {
             $queryBuilder->setParameter($parameterName, $data['value']);
         } else {
             $queryBuilder->setParameter($parameterName, sprintf($this->getOption('format'), $data['value']));
@@ -98,19 +97,21 @@ class TranslatableFilter extends StringFilter
      */
     private function getOperator($type)
     {
-        $choices = array(
+        $choices = [
             ChoiceType::TYPE_CONTAINS         => 'LIKE',
             ChoiceType::TYPE_NOT_CONTAINS     => 'NOT LIKE',
             ChoiceType::TYPE_EQUAL            => '=',
-        );
+        ];
 
-        return isset($choices[$type]) ? $choices[$type] : false;
+        return $choices[$type] ?? false;
     }
 
     /**
      * Does the query builder have a translation join
      *
      * @param ProxyQueryInterface $queryBuilder
+     * @param mixed               $alias
+     *
      * @return bool
      */
     private function hasJoin(ProxyQueryInterface $queryBuilder, $alias)
