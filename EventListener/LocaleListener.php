@@ -43,7 +43,7 @@ class LocaleListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    static public function getSubscribedEvents()
+    static public function getSubscribedEvents(): string
     {
         return array(
             KernelEvents::REQUEST => array(array('onKernelRequest', 10)),
