@@ -4,8 +4,11 @@ namespace Hgabka\Doctrine\TranslatableBundle\Filter;
 
 use Doctrine\ORM\Query\Expr;
 use Hgabka\Doctrine\Translatable\EventListener\TranslatableListener;
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
+use Sonata\AdminBundle\Form\Type\Operator\StringOperatorType;
+use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\DoctrineORMAdminBundle\Filter\Filter;
 use Sonata\DoctrineORMAdminBundle\Filter\StringFilter;
 
 /**
@@ -13,8 +16,32 @@ use Sonata\DoctrineORMAdminBundle\Filter\StringFilter;
  *
  * @see StringFilter
  */
-class TranslatableFilter extends StringFilter
+class TranslatableFilter extends Filter
 {
+    public const TRIM_NONE = 0;
+    public const TRIM_LEFT = 1;
+    public const TRIM_RIGHT = 2;
+    public const TRIM_BOTH = self::TRIM_LEFT | self::TRIM_RIGHT;
+
+    public const CHOICES = [
+        StringOperatorType::TYPE_CONTAINS => 'LIKE',
+        StringOperatorType::TYPE_STARTS_WITH => 'LIKE',
+        StringOperatorType::TYPE_ENDS_WITH => 'LIKE',
+        StringOperatorType::TYPE_NOT_CONTAINS => 'NOT LIKE',
+        StringOperatorType::TYPE_EQUAL => '=',
+        StringOperatorType::TYPE_NOT_EQUAL => '<>',
+    ];
+
+    /**
+     * Filtering types do not make sense for searching by empty value.
+     */
+    private const MEANINGLESS_TYPES = [
+        StringOperatorType::TYPE_CONTAINS,
+        StringOperatorType::TYPE_STARTS_WITH,
+        StringOperatorType::TYPE_ENDS_WITH,
+        StringOperatorType::TYPE_NOT_CONTAINS,
+    ];
+
     /**
      * @var TranslatableListener
      */
@@ -33,20 +60,20 @@ class TranslatableFilter extends StringFilter
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $queryBuilder, $alias, $field, $data)
+    public function filter(ProxyQueryInterface $queryBuilder, string $alias, string $field, FilterData $data)
     {
-        if (!$data || !is_array($data) || !array_key_exists('value', $data)) {
+        if (!$data || !$data->hasValue()) {
             return;
         }
 
-        $data['value'] = trim($data['value']);
+        $value = trim($data->getValue());
 
-        if (0 === strlen($data['value'])) {
+        if ('' === $value) {
             return;
         }
 
-        $data['type'] = !isset($data['type']) ? ChoiceType::TYPE_CONTAINS : $data['type'];
-        $operator = $this->getOperator((int) $data['type']);
+        $type = !$data->getType() ? ChoiceType::TYPE_CONTAINS : $data->getType();
+        $operator = $this->getOperator((int) $data->getType());
 
         if (!$operator) {
             $operator = 'LIKE';
@@ -77,33 +104,41 @@ class TranslatableFilter extends StringFilter
 
         $or->add(sprintf('%s.%s %s :%s', 'trans', $field, $operator, $parameterName));
 
-        if (ChoiceType::TYPE_NOT_CONTAINS === $data['type']) {
+        if (ChoiceType::TYPE_NOT_CONTAINS === $type) {
             $or->add($queryBuilder->expr()->isNull(sprintf('%s.%s', 'trans', $field)));
         }
 
         $this->applyWhere($queryBuilder, $or);
 
-        if (ChoiceType::TYPE_EQUAL === $data['type']) {
-            $queryBuilder->setParameter($parameterName, $data['value']);
+        if (ChoiceType::TYPE_EQUAL === $type) {
+            $queryBuilder->setParameter($parameterName, $value);
         } else {
-            $queryBuilder->setParameter($parameterName, sprintf($this->getOption('format'), $data['value']));
+            $queryBuilder->setParameter($parameterName, sprintf($this->getOption('format'), $value));
         }
     }
 
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    private function getOperator($type)
+    public function isSearchEnabled(): bool
     {
-        $choices = [
-            ChoiceType::TYPE_CONTAINS         => 'LIKE',
-            ChoiceType::TYPE_NOT_CONTAINS     => 'NOT LIKE',
-            ChoiceType::TYPE_EQUAL            => '=',
-        ];
+        return $this->getOption('global_search');
+    }
 
-        return $choices[$type] ?? false;
+    public function getDefaultOptions(): array
+    {
+        return [
+            'force_case_insensitivity' => false,
+            'trim' => self::TRIM_BOTH,
+            'allow_empty' => false,
+            'global_search' => true,
+        ];
+    }
+
+    public function getRenderSettings(): array
+    {
+        return [ChoiceType::class, [
+            'field_type' => $this->getFieldType(),
+            'field_options' => $this->getFieldOptions(),
+            'label' => $this->getLabel(),
+        ]];
     }
 
     /**
@@ -114,7 +149,7 @@ class TranslatableFilter extends StringFilter
      *
      * @return bool
      */
-    private function hasJoin(ProxyQueryInterface $queryBuilder, $alias)
+    private function hasJoin(ProxyQueryInterface $queryBuilder, string $alias): bool
     {
         $joins = $queryBuilder->getDQLPart('join');
 
@@ -129,5 +164,29 @@ class TranslatableFilter extends StringFilter
         }
 
         return false;
+    }
+
+    private function getOperator(int $type): string
+    {
+        if (!isset(self::CHOICES[$type])) {
+            throw new \OutOfRangeException(sprintf('The type "%s" is not supported, allowed one are "%s".', $type, implode('", "', array_keys(self::CHOICES))));
+        }
+
+        return self::CHOICES[$type];
+    }
+
+    private function trim(string $string): string
+    {
+        $trimMode = $this->getOption('trim', self::TRIM_BOTH);
+
+        if (0 !== ($trimMode & self::TRIM_LEFT)) {
+            $string = ltrim($string);
+        }
+
+        if (0 !== ($trimMode & self::TRIM_RIGHT)) {
+            $string = rtrim($string);
+        }
+
+        return $string;
     }
 }
