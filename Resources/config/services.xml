@@ -19,7 +19,7 @@
 
         <service id="hgabka_doctrine_translatable.listener" class="%hgabka_doctrine_translatable.listener.class%">
             <argument type="service" id="hgabka_doctrine_translatable.metadata_factory" />
-            <tag name="doctrine.event_subscriber" connection="default" />
+            <tag name="doctrine.event_subscriber" connection="default" priority="255" />
         </service>
 
         <service id="hgabka_doctrine_translatable.listener.locale" class="%hgabka_doctrine_translatable.listener.locale.class%">
