@@ -3,25 +3,20 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="hgabka_doctrine_translatable.listener.class">Hgabka\Doctrine\Translatable\EventListener\TranslatableListener</parameter>
-        <parameter key="hgabka_doctrine_translatable.metadata_factory.class">Metadata\MetadataFactory</parameter>
-        <parameter key="hgabka_doctrine_translatable.driver_chain.class">Metadata\Driver\DriverChain</parameter>
-    </parameters>
-
     <services>
-        <service id="hgabka_doctrine_translatable.driver_chain" class="%hgabka_doctrine_translatable.driver_chain.class%" />
+        <defaults autowire="true" autoconfigure="true"/>
+        <service id="Metadata\Driver\DriverChain" autoconfigure="true" autowire="true" />
 
-        <service id="hgabka_doctrine_translatable.metadata_factory" class="%hgabka_doctrine_translatable.metadata_factory.class%">
-            <argument type="service" id="hgabka_doctrine_translatable.driver_chain" />
+        <service id="Metadata\MetadataFactory" autoconfigure="true" autowire="true">
+            <argument type="service" id="Metadata\Driver\DriverChain" />
         </service>
 
-        <service id="hgabka_doctrine_translatable.listener" class="%hgabka_doctrine_translatable.listener.class%">
-            <argument type="service" id="hgabka_doctrine_translatable.metadata_factory" />
+        <service id="Hgabka\Doctrine\Translatable\EventListener\TranslatableListener" autoconfigure="true" autowire="true">
+            <argument type="service" id="Metadata\MetadataFactory" />
             <tag name="doctrine.event_subscriber" connection="default" priority="255" />
         </service>
 
-        <service id="Hgabka\Doctrine\Translatable\EventListener\TranslatableListener" autowire="true" autoconfigure="true">
+        <service id="Hgabka\Doctrine\TranslatableBundle\EventListener\LocaleListener" autowire="true" autoconfigure="true">
         </service>
     </services>
 </container>
