@@ -38,7 +38,7 @@ class HgabkaDoctrineTranslatableExtension extends Extension
      * @param ContainerBuilder     $container
      * @param Loader\XmlFileLoader $loader
      */
-    private function loadSonata(ContainerBuilder $container, Loader\XmlFileLoader $loader)
+    private function loadSonata(ContainerBuilder $container, Loader\XmlFileLoader $loader): void
     {
         $bundles = $container->getParameter('kernel.bundles');
 
