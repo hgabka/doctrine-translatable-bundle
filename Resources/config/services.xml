@@ -13,7 +13,6 @@
 
         <service id="Hgabka\Doctrine\Translatable\EventListener\TranslatableListener" autoconfigure="true" autowire="true">
             <argument type="service" id="Metadata\MetadataFactory" />
-            <tag name="doctrine.event_subscriber" connection="default" priority="255" />
         </service>
 
         <service id="Hgabka\Doctrine\TranslatableBundle\EventListener\LocaleListener" autowire="true" autoconfigure="true">
