@@ -2,6 +2,7 @@
 
 namespace Hgabka\Doctrine\TranslatableBundle\DependencyInjection\Compiler;
 
+use Metadata\Driver\DriverChain;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -19,7 +20,7 @@ class DriverChainCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        $driver = $container->getDefinition('hgabka_doctrine_translatable.driver_chain');
+        $driver = $container->getDefinition(DriverChain::class);
 
         foreach ($container->getParameter('doctrine.entity_managers') as $name => $manager) {
             $adapter = new Definition(
