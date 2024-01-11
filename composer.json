@@ -18,7 +18,7 @@
         "doctrine/collections": "^1.6",
         "doctrine/common": "^3.0",
         "doctrine/inflector": "^2.0",
-        "doctrine/persistence": "^2.0",
+        "doctrine/persistence": "^3.0",
         "hgabka/doctrine-translatable": "^7.0",
         "symfony/framework-bundle": "^7.0"
     },
