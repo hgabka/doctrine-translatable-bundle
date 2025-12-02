@@ -2,6 +2,7 @@
 
 namespace Hgabka\Doctrine\TranslatableBundle\DependencyInjection;
 
+use Hgabka\Doctrine\Translatable\EventListener\TranslatableListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -17,14 +18,14 @@ class HgabkaDoctrineTranslatableExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->getDefinition('hgabka_doctrine_translatable.listener')
+        $container->getDefinition(TranslatableListener::class)
                   ->addMethodCall('setCurrentLocale', [$config['fallback_locale']])
                   ->addMethodCall('setFallbackLocale', [$config['fallback_locale']]);
 
@@ -37,7 +38,7 @@ class HgabkaDoctrineTranslatableExtension extends Extension
      * @param ContainerBuilder     $container
      * @param Loader\XmlFileLoader $loader
      */
-    private function loadSonata(ContainerBuilder $container, Loader\XmlFileLoader $loader)
+    private function loadSonata(ContainerBuilder $container, Loader\XmlFileLoader $loader): void
     {
         $bundles = $container->getParameter('kernel.bundles');
 

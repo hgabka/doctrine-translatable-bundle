@@ -3,30 +3,19 @@
 namespace Hgabka\Doctrine\TranslatableBundle\EventListener;
 
 use Hgabka\Doctrine\Translatable\EventListener\TranslatableListener;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\KernelEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**
  * Inject current locale in the TranslatableListener
  *
  * @see EventSubscriberInterface
  */
-class LocaleListener implements EventSubscriberInterface
+#[AsEventListener(priority: 10)]
+class LocaleListener
 {
-    /**
-     * @var TranslatableListener
-     */
-    private $translatableListener;
-
-    /**
-     * Constructor
-     *
-     * @param TranslatableListener $translatableListener
-     */
-    public function __construct(TranslatableListener $translatableListener)
+    public function __construct(private readonly TranslatableListener $translatableListener)
     {
-        $this->translatableListener = $translatableListener;
     }
 
     /**
@@ -36,18 +25,8 @@ class LocaleListener implements EventSubscriberInterface
      *
      * @return void
      */
-    public function onKernelRequest(KernelEvent $event)
+    public function __invoke(RequestEvent $event)
     {
         $this->translatableListener->setCurrentLocale($event->getRequest()->getLocale());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::REQUEST => [['onKernelRequest', 10]],
-        ];
     }
 }
