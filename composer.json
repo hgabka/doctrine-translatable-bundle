@@ -16,10 +16,10 @@
     }],
     "require": {
         "doctrine/collections": "^3.0",
-        "doctrine/common": "^4.0",
+        "doctrine/common": "^3.0",
         "doctrine/inflector": "^2.0",
         "doctrine/persistence": "^4.0",
-        "hgabka/doctrine-translatable": "^7.0",
+        "hgabka/doctrine-translatable": "^7.1",
         "symfony/framework-bundle": "^7.0"
     },
     "require-dev": {
