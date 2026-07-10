@@ -1,0 +1,16 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Metadata\Driver\DriverChain: ~
+
+    Metadata\MetadataFactory:
+        arguments:
+            - '@Metadata\Driver\DriverChain'
+
+    Hgabka\Doctrine\Translatable\EventListener\TranslatableListener:
+        arguments:
+            - '@Metadata\MetadataFactory'
+
+    Hgabka\Doctrine\TranslatableBundle\EventListener\LocaleListener: ~

@@ -1,0 +1,10 @@
+parameters:
+    hgabka_doctrine_translatable.sonata.filter.class: Hgabka\Doctrine\TranslatableBundle\Filter\TranslatableFilter
+
+services:
+    hgabka_doctrine_translatable.sonata.filter:
+        class: '%hgabka_doctrine_translatable.sonata.filter.class%'
+        arguments:
+            - '@hgabka_doctrine_translatable.listener'
+        tags:
+            - { name: sonata.admin.filter.type, alias: translatable }

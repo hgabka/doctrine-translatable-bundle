@@ -22,8 +22,8 @@ class HgabkaDoctrineTranslatableExtension extends Extension
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.xml');
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.yaml');
 
         $container->getDefinition(TranslatableListener::class)
                   ->addMethodCall('setCurrentLocale', [$config['fallback_locale']])
@@ -36,9 +36,9 @@ class HgabkaDoctrineTranslatableExtension extends Extension
      * Load the Sonata configuration, if the versions is supported
      *
      * @param ContainerBuilder     $container
-     * @param Loader\XmlFileLoader $loader
+     * @param Loader\YamlFileLoader $loader
      */
-    private function loadSonata(ContainerBuilder $container, Loader\XmlFileLoader $loader): void
+    private function loadSonata(ContainerBuilder $container, Loader\YamlFileLoader $loader): void
     {
         $bundles = $container->getParameter('kernel.bundles');
 
@@ -54,6 +54,6 @@ class HgabkaDoctrineTranslatableExtension extends Extension
             }
         }
 
-        $loader->load('sonata.xml');
+        $loader->load('sonata.yaml');
     }
 }
