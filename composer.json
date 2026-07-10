@@ -21,7 +21,7 @@
         "doctrine/common": "^3.0",
         "doctrine/inflector": "^2.0",
         "doctrine/persistence": "^4.0",
-        "hgabka/doctrine-translatable": "^7.1|^8.1",
+        "hgabka/doctrine-translatable": "^7.1|^8.0",
         "symfony/framework-bundle": "^7.0|^8.0"
     },
     "require-dev": {
@@ -35,7 +35,7 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev",
-            "dev-v8": "8.1.x-dev"
+            "dev-v8": "8.0.x-dev"
         }
     }
 }
