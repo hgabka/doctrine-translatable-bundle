@@ -33,7 +33,7 @@ class HgabkaDoctrineTranslatableExtension extends Extension
     }
 
     /**
-     * Load the Sonata configuration, if the versions is supported
+     * Load the Sonata configuration, if Sonata is installed
      *
      * @param ContainerBuilder     $container
      * @param Loader\YamlFileLoader $loader
@@ -44,14 +44,6 @@ class HgabkaDoctrineTranslatableExtension extends Extension
 
         if (!isset($bundles['SonataDoctrineORMAdminBundle'])) {
             return; // Sonata not installed
-        }
-
-        $refl = new \ReflectionMethod('Sonata\\DoctrineORMAdminBundle\\Filter\\StringFilter', 'filter');
-
-        if (method_exists($refl, 'getReturnType')) {
-            if ($returnType = $refl->getReturnType()) {
-                return; // Not compatible with this Sonata version
-            }
         }
 
         $loader->load('sonata.yaml');

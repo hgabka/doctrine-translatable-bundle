@@ -5,6 +5,6 @@ services:
     hgabka_doctrine_translatable.sonata.filter:
         class: '%hgabka_doctrine_translatable.sonata.filter.class%'
         arguments:
-            - '@hgabka_doctrine_translatable.listener'
+            - '@Hgabka\Doctrine\Translatable\EventListener\TranslatableListener'
         tags:
             - { name: sonata.admin.filter.type, alias: translatable }

@@ -60,61 +60,53 @@ class TranslatableFilter extends Filter
     /**
      * {@inheritdoc}
      */
-    public function filter(ProxyQueryInterface $queryBuilder, string $alias, string $field, FilterData $data)
+    public function filter(ProxyQueryInterface $query, string $alias, string $field, FilterData $data): void
     {
-        if (!$data || !$data->hasValue()) {
+        if (!$data->hasValue()) {
             return;
         }
 
-        $value = trim($data->getValue());
+        $value = trim((string) $data->getValue());
 
         if ('' === $value) {
             return;
         }
 
-        $type = !$data->getType() ? ChoiceType::TYPE_CONTAINS : $data->getType();
-        $operator = $this->getOperator((int) $data->getType());
+        $type = $data->getType() ?: StringOperatorType::TYPE_CONTAINS;
+        $operator = $this->getOperator((int) $type);
 
-        if (!$operator) {
-            $operator = 'LIKE';
-        }
-
-        $entities = $queryBuilder->getRootEntities();
+        $entities = $query->getRootEntities();
         $classMetadata = $this->listener->getTranslatableMetadata(current($entities));
         $transMetadata = $this->listener->getTranslatableMetadata($classMetadata->targetEntity);
 
         // Add inner join
-        if (!$this->hasJoin($queryBuilder, $alias)) {
-            $parameterName = $this->getNewParameterName($queryBuilder);
+        if (!$this->hasJoin($query, $alias)) {
+            $parameterName = $this->getNewParameterName($query);
 
-            $queryBuilder->innerJoin(
+            $query->innerJoin(
                 sprintf('%s.%s', $alias, $classMetadata->translations->name),
                 'trans',
                 Expr\Join::WITH,
                 sprintf('trans.%s = :%s', $transMetadata->locale->name, $parameterName)
             );
 
-            $queryBuilder->setParameter($parameterName, $this->listener->getCurrentLocale());
+            $query->setParameter($parameterName, $this->listener->getCurrentLocale());
         }
 
         // c.name > '1' => c.name OPERATOR :FIELDNAME
-        $parameterName = $this->getNewParameterName($queryBuilder);
+        $parameterName = $this->getNewParameterName($query);
 
-        $or = $queryBuilder->expr()->orX();
+        $or = $query->expr()->orX();
 
         $or->add(sprintf('%s.%s %s :%s', 'trans', $field, $operator, $parameterName));
 
-        if (ChoiceType::TYPE_NOT_CONTAINS === $type) {
-            $or->add($queryBuilder->expr()->isNull(sprintf('%s.%s', 'trans', $field)));
+        if (StringOperatorType::TYPE_NOT_CONTAINS === (int) $type) {
+            $or->add($query->expr()->isNull(sprintf('%s.%s', 'trans', $field)));
         }
 
-        $this->applyWhere($queryBuilder, $or);
+        $this->applyWhere($query, $or);
 
-        if (ChoiceType::TYPE_EQUAL === $type) {
-            $queryBuilder->setParameter($parameterName, $value);
-        } else {
-            $queryBuilder->setParameter($parameterName, sprintf($this->getOption('format'), $value));
-        }
+        $query->setParameter($parameterName, sprintf($this->getFormat((int) $type), $value));
     }
 
     public function isSearchEnabled(): bool
@@ -149,6 +141,19 @@ class TranslatableFilter extends Filter
      *
      * @return bool
      */
+    /**
+     * The sprintf() pattern wrapped around the searched value for the given operator type.
+     */
+    private function getFormat(int $type): string
+    {
+        return match ($type) {
+            StringOperatorType::TYPE_EQUAL, StringOperatorType::TYPE_NOT_EQUAL => '%s',
+            StringOperatorType::TYPE_STARTS_WITH => '%s%%',
+            StringOperatorType::TYPE_ENDS_WITH => '%%%s',
+            default => '%%%s%%',
+        };
+    }
+
     private function hasJoin(ProxyQueryInterface $queryBuilder, string $alias): bool
     {
         $joins = $queryBuilder->getDQLPart('join');
